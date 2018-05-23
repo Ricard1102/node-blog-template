@@ -1,5 +1,6 @@
 var keystone = require('keystone');
 var async = require('async');
+var share = require('share-js');
 
 exports = module.exports = function (req, res) {
 
@@ -59,7 +60,7 @@ exports = module.exports = function (req, res) {
 
 		var q = keystone.list('Post').paginate({
 			page: req.query.page || 1,
-			perPage: 10,
+			perPage: 5, //originally 10
 			maxPages: 10,
 			filters: {
 				state: 'published',
@@ -78,6 +79,15 @@ exports = module.exports = function (req, res) {
 		});
 	});
 
+
+
+
 	// Render the view
-	view.render('blog');
+	view.render('blog', {
+
+		//Configure variables hbs
+		logo: '/img/logohannah.png',
+		logoCaption: 'The Beute Clinic Logo blog',
+		logoTitle: 'Beute Clinic Logo'
+	});
 };

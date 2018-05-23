@@ -21,6 +21,7 @@
 var keystone = require('keystone');
 var middleware = require('./middleware');
 var express = require('express');
+var nodemailer = require('nodemailer');
 var path = require('path');
 var importRoutes = keystone.importer(__dirname);
 //STATIC FOLDER
@@ -59,6 +60,70 @@ exports = module.exports = function (app) {
 	// app.get('/api/announcement', apiHandlers.getAnnouncements);
 	// NOTE: To protect a route so that only admins can see it, use the requireUser middleware:
 	// app.get('/protected', middleware.requireUser, routes.views.protected);
+
+
+
+
+
+
+	app.post('/send', (req, res) => {
+		const output = `<p>You have a new contact request</p>
+    <h3>Contact Details</h3>
+    <ul>
+      <li>Name: ${req.body.name}</li>
+      <li>Email: ${req.body.email}</li>
+      <li>Phone: ${req.body.phone}</li>
+      <li>Treatment: ${req.body.treatment}</li>
+      <li>Subject: ${req.body.subject}</li>
+      <li>Message: ${req.body.message}</li>
+      </ul>`;
+
+		// create reusable transporter object using the default SMTP transport
+		let transporter = nodemailer.createTransport({
+			service: 'gmail',
+			host: 'smtp.google.com',
+			port: 25, //587
+			secure: false, // true for 465, false for other ports
+			auth: {
+				user: process.env.MAIL_USER, // generated ethereal user
+				pass: process.env.MAIL_PASS // generated ethereal password
+			},
+			tls: {
+				rejectUnauthorized: false
+			}
+		});
+
+		// setup email data with unicode symbols
+		let mailOptions = {
+			from: process.env.MAIL_FROM, // sender address
+			to: process.env.MAIL_TO, // list of receivers
+			subject: 'Contact request', // Subject line
+			text: 'Hello world', // plain text body
+			html: output // html body
+		};
+
+		// send mail with defined transport object
+
+
+		transporter.sendMail(mailOptions, (error, info) => {
+
+			if (error) {
+				return console.log(error);
+			}
+			console.log('Message sent: %s', info.messageId);
+
+			console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+
+			res.render('partials/thanks', { businessName: 'The Beute Clinic' });
+
+
+
+		});
+
+	});
+
+
+
 
 };
 
