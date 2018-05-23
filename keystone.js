@@ -10,6 +10,10 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 
+//port added
+const port = process.env.PORT || 3000;
+
+
 // Initialise Keystone with your project's configuration.
 // See http://keystonejs.com/guide/config for available options
 // and documentation.
