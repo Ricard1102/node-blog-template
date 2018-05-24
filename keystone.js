@@ -11,7 +11,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 //port added
-const port = process.env.PORT || 3000;
+var port = process.env.PORT || 3000;
 
 
 // Initialise Keystone with your project's configuration.
